@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/text_view_expanded_1"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/date"
+        android:text="Sender"
+        android:textColor="@color/sender" />
+
+    <TextView
+        android:id="@+id/text_view_expanded_2"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_expanded_1"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/date"
+        android:text="Subject"
+        android:textColor="@color/subject" />
+
+    <TextView
+        android:id="@+id/text_view_expanded_3"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_view_expanded_2"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/date"
+        android:text="Body"
+        android:textColor="@color/message" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="end"
+        android:text="Date"
+        android:textColor="@color/timestamp" />
+
+</RelativeLayout>

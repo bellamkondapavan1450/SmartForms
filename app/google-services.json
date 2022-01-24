@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "95112995382",
+    "firebase_url": "https://smart-forms-4f86d-default-rtdb.firebaseio.com",
+    "project_id": "smart-forms-4f86d",
+    "storage_bucket": "smart-forms-4f86d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95112995382:android:8231f925232b1a721f2e97",
+        "android_client_info": {
+          "package_name": "com.example.smartforms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "95112995382-e9kurf6dfqdt9l6g8bm05iprljs5fm7t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdtpGNf8cOi_FW4arA4NWGlCsWuWrYtag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "95112995382-e9kurf6dfqdt9l6g8bm05iprljs5fm7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

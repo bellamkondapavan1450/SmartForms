@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Smart Forms</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="domain">\@bmu.edu.in</string>
+    <string name="textPersonName">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\ </string>
+    <string name="textEmail">abcdefghijklmnopqrstuvwxyz123456789.</string>
+    <string name="textPassword">abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ@#</string>
+    <string name="mailbody">abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ@#!.,:;"'{}[]\|+*%$=_-()\n </string>
+    <!--    <string name="default_web_client_id">128554847958-nk90dsh6r4vi55pvgujne2o3cb51vs1p.apps.googleusercontent.com</string>-->
+</resources>

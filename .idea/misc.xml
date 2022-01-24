@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.3646153846153846" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/btn_bg.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/edit.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/edit_bg.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_arrow_back.xml" value="0.22420837589376916" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_arrow_drop.xml" value="0.22420837589376916" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_back.xml" value="0.22864583333333333" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_check.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_clear.xml" value="0.17407407407407408" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_compose.xml" value="0.17407407407407408" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_edit.xml" value="0.12135416666666667" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_email.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_error.xml" value="0.12135416666666667" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_google.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_home.xml" value="0.1" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_menu.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_person.xml" value="0.1" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_search.xml" value="0.22407407407407406" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_send.xml" value="0.1" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_star.xml" value="0.1" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_visibility.xml" value="0.12135416666666667" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/ic_visibility_off.xml" value="0.12135416666666667" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/icon_bg.xml" value="0.240625" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/nav_toolbar.xml" value="0.22420837589376916" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/drawable/search_bar.xml" value="0.22407407407407406" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_compose.xml" value="0.2" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_edit_profile.xml" value="0.264" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_login_register.xml" value="0.32083333333333336" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_main.xml" value="0.2906110283159464" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_profile.xml" value="0.26" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_sign_in.xml" value="0.2" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_start.xml" value="0.176" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/activity_view_mail.xml" value="0.32083333333333336" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/edit.xml" value="0.264" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_blank.xml" value="0.2203125" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_inbox.xml" value="0.20833333333333334" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_missed.xml" value="0.20833333333333334" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_sent.xml" value="0.20833333333333334" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_starred.xml" value="0.32083333333333336" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_tasks.xml" value="0.20833333333333334" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/fragment_trash.xml" value="0.32083333333333336" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/indox_frag.xml" value="0.2203125" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/indox_missed.xml" value="0.2203125" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/indox_tasks.xml" value="0.2203125" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/mail_card.xml" value="0.33" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/nav_header.xml" value="0.264" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/layout/sent_frag.xml" value="0.2203125" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/menu/compose_toolbar.xml" value="0.1" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/menu/main.xml" value="1.0" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/menu/menu_drawer.xml" value="0.4" />
+        <entry key="..\:/V/MAD/Project/SmartForms/app/src/main/res/xml/file_paths.xml" value="0.1062058526740666" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/background.xml" value="0.3687179487179487" />
+        <entry key="app/src/main/res/drawable/btn_bg.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/edit.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/edit_bg.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/fb.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_add.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_arrow_back.xml" value="0.17222222222222222" />
+        <entry key="app/src/main/res/drawable/ic_arrow_drop.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_arrow_forward.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_attachment.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_check.xml" value="0.36564102564102563" />
+        <entry key="app/src/main/res/drawable/ic_clear.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_compose.xml" value="0.17222222222222222" />
+        <entry key="app/src/main/res/drawable/ic_compose_back.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_error.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_google.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_inbox.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_menu.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_missed.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_next.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_person.xml" value="0.3687179487179487" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_security.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_send.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_star_outline.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_starred.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_tasks.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_trash.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_unread_mail.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_visibility.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_visibility_off.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/indicator_default.xml" value="0.215625" />
+        <entry key="app/src/main/res/drawable/indicator_selected.xml" value="0.215625" />
+        <entry key="app/src/main/res/drawable/indicator_selector.xml" value="0.21614583333333334" />
+        <entry key="app/src/main/res/drawable/nav_toolbar.xml" value="0.3687179487179487" />
+        <entry key="app/src/main/res/drawable/shadow.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/splashbackground.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/splashshadow.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout-v28/activity_login_register.xml" value="0.26614583333333336" />
+        <entry key="app/src/main/res/layout-v28/activity_main.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout-v28/activity_start.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_compose.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/activity_edit_profile.xml" value="0.35778985507246375" />
+        <entry key="app/src/main/res/layout/activity_googleform.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_login_register.xml" value="0.3528205128205128" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.3528205128205128" />
+        <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/activity_start.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_view_mail.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_viewmail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_inbox.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_missed.xml" value="0.19895833333333332" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_sent.xml" value="0.19895833333333332" />
+        <entry key="app/src/main/res/layout/fragment_starred.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_tasks.xml" value="0.19895833333333332" />
+        <entry key="app/src/main/res/layout/fragment_trash.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/mail.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/mail_card.xml" value="0.3528205128205128" />
+        <entry key="app/src/main/res/layout/mails.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/nav_header.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/notification_collapsed.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/notification_expanded.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/splash_screen_item_layout.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/to_mails.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.35833333333333334" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/inbox"
+            android:icon="@drawable/ic_inbox"
+            android:title="Inbox" />
+        <item
+            android:id="@+id/sent"
+            android:icon="@drawable/ic_send"
+            android:title="Sent" />
+
+        <item
+            android:id="@+id/starred"
+            android:icon="@drawable/ic_starred"
+            android:title="Starred" />
+
+        <item
+            android:id="@+id/tasks"
+            android:icon="@drawable/ic_tasks"
+            android:title="Tasks" />
+        <item
+            android:id="@+id/missed"
+            android:icon="@drawable/ic_missed"
+            android:title="Missed" />
+
+        <item
+            android:id="@+id/trash"
+            android:icon="@drawable/ic_trash"
+            android:title="Trash" />
+        <!--        <item-->
+        <!--            android:id="@+id/profile"-->
+        <!--            android:icon="@drawable/ic_person"-->
+        <!--            android:title="Profile" />-->
+    </group>
+
+</menu>
