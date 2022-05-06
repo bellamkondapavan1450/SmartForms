@@ -1,12 +1,5 @@
 package com.example.smartforms;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -27,6 +20,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,10 +37,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Compose extends AppCompatActivity {
 
@@ -61,6 +71,11 @@ public class Compose extends AppCompatActivity {
     EditText subject, body;
     TextView from, deadline, sample;
     MailItem mailItem;
+
+    private final byte[] encryptionKey = {9, 115, 51, 86, 105, 4, -31, -23, -68, 88, 17, 20, 3, -105, 119, -53};
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+
     static String Name = "", Email = "", Image = "", Deadline = "";
 
 
@@ -68,6 +83,17 @@ public class Compose extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+            secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         dataref = database.getReference();
@@ -143,42 +169,23 @@ public class Compose extends AppCompatActivity {
 
     private void sendMail() {
 
-        DatabaseReference ref = dataref.child("Users").child(auth.getCurrentUser().getUid()).child("Details");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                if (user != null) {
-                    Image = user.getImage();
-                    Name = user.getfName() + " " + user.getlName();
-                    Email = user.getEmail();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        Date myDate = new Date();
+        String date = dateFormat.format(myDate);
 
-                    @SuppressLint("SimpleDateFormat")
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-                    Date myDate = new Date();
-                    String date = dateFormat.format(myDate);
+        long order = 999999999999L - Long.parseLong(date);
 
-                    long order = 999999999999L - Long.parseLong(date);
+        mailItem = new MailItem(auth.getCurrentUser().getUid(), AESEncryptionMethod(subject.getText().toString()),
+                AESEncryptionMethod(body.getText().toString()), date, order, sample.getText().toString());
 
-                    mailItem = new MailItem(Image, Name, Email, subject.getText().toString(),
-                            body.getText().toString(), date, order, sample.getText().toString());
+        dataref.child("Users").child(auth.getCurrentUser().getUid()).child("Sent").push().setValue(mailItem);
+        for (String uid : sendList) {
+            dataref.child("Users").child(uid).child("Inbox").push().setValue(mailItem);
+        }
+        Toast.makeText(Compose.this, "Mail Sent Successfully", Toast.LENGTH_SHORT).show();
+        onBackPressed();
 
-                    dataref.child("Users").child(auth.getCurrentUser().getUid()).child("Sent").push().setValue(mailItem);
-                    for (String uid : sendList) {
-                        dataref.child("Users").child(uid).child("Inbox").push().setValue(mailItem);
-                    }
-                    Toast.makeText(Compose.this, "Mail Sent Successfully", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                } else {
-                    Toast.makeText(Compose.this, "Error, Try Again!!!", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Compose.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void showDialogBox() {
@@ -313,6 +320,48 @@ public class Compose extends AppCompatActivity {
 
         timePickerDialog.show();
 
+    }
+
+    private String AESEncryptionMethod(String string) {
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        returnString = new String(encryptedByte, StandardCharsets.ISO_8859_1);
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
     }
 
 }

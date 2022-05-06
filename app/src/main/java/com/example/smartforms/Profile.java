@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +20,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -45,10 +54,28 @@ public class Profile extends AppCompatActivity {
     private DatabaseReference dataRef;
     private String myUri = "";
 
+
+    private final byte[] encryptionKey = {9, 115, 51, 86, 105, 4, -31, -23, -68, 88, 17, 20, 3, -105, 119, -53};
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+            secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         auth = FirebaseAuth.getInstance();
         dataRef = FirebaseDatabase.getInstance().getReference().child("Users");
         pd = new ProgressDialog(this);
@@ -134,12 +161,16 @@ public class Profile extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
-                        tv_fName.setText(user.getfName());
-                        tv_lName.setText(user.getlName());
-                        tv_name.setText(user.getfName() + " " + user.getlName());
-                        tv_email.setText(user.getEmail());
-                        myUri = user.getImage();
-                        Picasso.get().load(myUri).placeholder(R.drawable.profilebg).into(profilePicture);
+                        try {
+                            tv_fName.setText(AESDecryptionMethod(user.getfName()));
+                            tv_lName.setText(AESDecryptionMethod(user.getlName()));
+                            tv_name.setText(AESDecryptionMethod(user.getfName()) + " " + AESDecryptionMethod(user.getlName()));
+                            tv_email.setText(AESDecryptionMethod(user.getEmail()));
+                            myUri = user.getImage();
+                            Picasso.get().load(myUri).placeholder(R.drawable.profilebg).into(profilePicture);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         pd.dismiss();
                     } else {
                         pd.dismiss();
@@ -162,4 +193,47 @@ public class Profile extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    private String AESEncryptionMethod(String string) {
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        returnString = new String(encryptedByte, StandardCharsets.ISO_8859_1);
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
+    }
+
 }

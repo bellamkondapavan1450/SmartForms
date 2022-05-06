@@ -19,6 +19,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewMail extends AppCompatActivity {
@@ -39,10 +50,25 @@ public class ViewMail extends AppCompatActivity {
     String ClickedItemKey;
     String ItemKey;
 
+    private final byte[] encryptionKey = {9, 115, 51, 86, 105, 4, -31, -23, -68, 88, 17, 20, 3, -105, 119, -53};
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_mail);
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+            secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         firebaseDatabase = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         star = findViewById(R.id.star);
@@ -182,11 +208,33 @@ public class ViewMail extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mailItem = snapshot.getValue(MailItem.class);
                 if (mailItem != null) {
-                    if (!mailItem.getImgUri().equals(""))
-                        Picasso.get().load(mailItem.getImgUri()).placeholder(R.drawable.profilebg).into(profile);
-                    subject.setText(mailItem.getSubject());
-                    sender.setText(mailItem.getSender());
-                    email.setText(mailItem.getEmail());
+
+                    String Uid = mailItem.getSenderUid();
+                    firebaseDatabase.getReference().child("Users").child(Uid).child("Details").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            if (user != null) {
+                                try {
+                                    if (!user.getImage().equals(""))
+                                        Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(profile);
+                                    sender.setText(AESDecryptionMethod(user.getfName()) + " " + AESDecryptionMethod(user.getlName()));
+                                    email.setText(AESDecryptionMethod(user.getEmail()));
+                                    subject.setText(AESDecryptionMethod(mailItem.getSubject()));
+                                    body.setText(AESDecryptionMethod(mailItem.getBody()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Toast.makeText(ViewMail.this, "Error, Try Again!!!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     String d = mailItem.getDate().substring(0, 4);
                     switch (mailItem.getDate().substring(4, 6)) {
                         case "01":
@@ -290,9 +338,6 @@ public class ViewMail extends AppCompatActivity {
 
                     deadline.setText("DeadLine: " + d1 + " " + time1);
 
-
-                    body.setText(mailItem.getBody());
-
                     if (mailItem.getIsImportant())
                         star.setImageResource(R.drawable.ic_star);
                     else
@@ -312,4 +357,47 @@ public class ViewMail extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    private String AESEncryptionMethod(String string) {
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        returnString = new String(encryptedByte, StandardCharsets.ISO_8859_1);
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
+    }
+
 }

@@ -1,5 +1,12 @@
 package com.example.smartforms;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -11,14 +18,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,16 +25,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GithubAuthCredential;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,7 +40,7 @@ public class LoginRegister extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager2 viewPager;
     TextView textView;
-    SignInButton signInButton;
+//    SignInButton signInButton;
     GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth auth;
     FirebaseDatabase firebaseDatabase;
@@ -64,7 +59,7 @@ public class LoginRegister extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Register"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        signInButton = findViewById(R.id.signInButton);
+//        signInButton = findViewById(R.id.signInButton);
         auth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
@@ -84,12 +79,12 @@ public class LoginRegister extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
+//        signInButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                signIn();
+//            }
+//        });
 
         MyFragmentAdapter myFragmentAdapter = new MyFragmentAdapter(this, 2);
         viewPager.setAdapter(myFragmentAdapter);
@@ -121,7 +116,7 @@ public class LoginRegister extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 tabLayout.selectTab(tabLayout.getTabAt(position));
-                switch(position){
+                switch (position) {
                     case 0:
                         textView.setText("Welcome Back!");
                         break;
@@ -146,7 +141,7 @@ public class LoginRegister extends AppCompatActivity {
             Toast.makeText(LoginRegister.this, "Signed in Successful!!!", Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(account);
         } catch (ApiException e) {
-            Toast.makeText(LoginRegister.this, e.toString() + "Signed in Failed!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginRegister.this, e + "Signed in Failed!!!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -155,7 +150,7 @@ public class LoginRegister extends AppCompatActivity {
         auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     Toast.makeText(LoginRegister.this, "task is Successful!!!", Toast.LENGTH_SHORT).show();
                     FirebaseUser user = auth.getCurrentUser();
                     getUserInfo(user);
@@ -193,11 +188,27 @@ public class LoginRegister extends AppCompatActivity {
         activityGoogleSignIn.launch(signInIntent);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(LoginRegister.this, MainActivity.class));
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(LoginRegister.this, StartActivity.class));
+        finish();
+    }
+
     static class MyFragmentAdapter extends FragmentStateAdapter {
 
         int numTabs;
 
-        MyFragmentAdapter(FragmentActivity fragmentActivity, int tabs){
+        MyFragmentAdapter(FragmentActivity fragmentActivity, int tabs) {
             super(fragmentActivity);
             numTabs = tabs;
         }
@@ -206,7 +217,7 @@ public class LoginRegister extends AppCompatActivity {
         @Override
         public Fragment createFragment(int position) {
             Fragment fragment = null;
-            switch(position){
+            switch (position) {
                 case 0:
                     fragment = new LoginFragment();
                     break;
@@ -224,18 +235,9 @@ public class LoginRegister extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(LoginRegister.this, MainActivity.class));
-            finish();
-        }
+    protected void onResume() {
+        super.onResume();
+        viewPager.setCurrentItem(0);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(LoginRegister.this, StartActivity.class));
-        finish();
-    }
 }

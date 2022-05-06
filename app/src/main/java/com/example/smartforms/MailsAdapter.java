@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class MailsAdapter extends RecyclerView.Adapter<MailsAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         String mail = mails.get(position);
-        if(!mail.equals(""))
+        if (!mail.equals(""))
             holder.mail.setText(mail);
 
     }

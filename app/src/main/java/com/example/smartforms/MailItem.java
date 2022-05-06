@@ -2,9 +2,7 @@ package com.example.smartforms;
 
 public class MailItem {
 
-    private String imgUri;
-    private String sender;
-    private String email;
+    private String senderUid;
     private String subject;
     private String body;
     private String date;
@@ -13,12 +11,11 @@ public class MailItem {
     private long order;
     private String deadline = "";
 
-    public MailItem() { }
+    public MailItem() {
+    }
 
-    public MailItem(String imgUri, String sender, String email, String subject, String body, String date, long order, String deadline) {
-        this.imgUri = imgUri;
-        this.sender = sender;
-        this.email = email;
+    public MailItem(String senderUid, String subject, String body, String date, long order, String deadline) {
+        this.senderUid = senderUid;
         this.subject = subject;
         this.body = body;
         this.date = date;
@@ -27,10 +24,8 @@ public class MailItem {
 
     }
 
-    public MailItem(String imgUri, String sender, String email, String subject, String body, String date, boolean isImportant, boolean isRead, long order, String deadline) {
-        this.imgUri = imgUri;
-        this.sender = sender;
-        this.email = email;
+    public MailItem(String senderUid, String subject, String body, String date, boolean isImportant, boolean isRead, long order, String deadline) {
+        this.senderUid = senderUid;
         this.subject = subject;
         this.body = body;
         this.date = date;
@@ -41,28 +36,12 @@ public class MailItem {
 
     }
 
-    public String getEmail() {
-        return email;
+    public String getSenderUid() {
+        return senderUid;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getImgUri() {
-        return imgUri;
-    }
-
-    public void setImgUri(String imgUri) {
-        this.imgUri = imgUri;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setSenderUid(String senderUid) {
+        this.senderUid = senderUid;
     }
 
     public String getSubject() {

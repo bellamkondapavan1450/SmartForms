@@ -32,6 +32,17 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 public class SentFragment extends Fragment {
 
     RecyclerView recyclerView;
@@ -45,10 +56,25 @@ public class SentFragment extends Fragment {
     ImageView imageView;
     View view1;
 
+    private final byte[] encryptionKey = {9, 115, 51, 86, 105, 4, -31, -23, -68, 88, 17, 20, 3, -105, 119, -53};
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sent, container, false);
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+            secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         view1 = view.findViewById(R.id.view);
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,20 +138,40 @@ public class SentFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull MailItemViewHolder holder, int position, @NonNull MailItem model) {
 
-                if(!model.getImgUri().equals(""))
-                    Picasso.get().load(model.getImgUri()).placeholder(R.drawable.profilebg).into(holder.profile);
-                holder.sender.setText(model.getSender());
-                holder.subject.setText(model.getSubject());
-                holder.body.setText(model.getBody());
-                String date = model.getDate().substring(0,4);
-                switch(model.getDate().substring(4,6)) {
-                    case "01" :
+                String Uid = model.getSenderUid();
+                firebaseDatabase.getReference().child("Users").child(Uid).child("Details").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user = snapshot.getValue(User.class);
+                        if (user != null) {
+                            try {
+                                if (!user.getImage().equals(""))
+                                    Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(holder.profile);
+                                holder.sender.setText(AESDecryptionMethod(user.getfName()) + " " + AESDecryptionMethod(user.getlName()));
+                                holder.subject.setText(AESDecryptionMethod(model.getSubject()));
+                                holder.body.setText(AESDecryptionMethod(model.getBody()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Error, Try Again!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                String date = model.getDate().substring(0, 4);
+                switch (model.getDate().substring(4, 6)) {
+                    case "01":
                         date = "Jan " + date;
                         break;
-                    case "02" :
+                    case "02":
                         date = "Feb " + date;
                         break;
-                    case "03" :
+                    case "03":
                         date = "Mar " + date;
                         break;
                     case "04" :
@@ -254,6 +300,48 @@ public class SentFragment extends Fragment {
         };
         firebaseRecyclerAdapter.startListening();
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    private String AESEncryptionMethod(String string) {
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        returnString = new String(encryptedByte, StandardCharsets.ISO_8859_1);
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
     }
 
 }

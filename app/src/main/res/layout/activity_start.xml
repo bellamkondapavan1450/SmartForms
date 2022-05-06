@@ -63,7 +63,8 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:padding="16dp"
-            android:text="Smart form is the easy solution for many tasks. It is easy to access and user friendly. This lets you make forms, send mails and even notifies you."
+            android:textSize="16dp"
+            android:text="Easy solution for many tasks. It is easy to access and user friendly. This lets you make forms, send mails and even notifies you."
             android:textAlignment="center" />
 
         <TextView

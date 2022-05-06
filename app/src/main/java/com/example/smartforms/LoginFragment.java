@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +50,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         email_layout = view.findViewById(R.id.email_layout);
         password_layout = view.findViewById(R.id.password_layout);
+        password_layout.setHelperText("");
         edit_email = view.findViewById(R.id.email);
         edit_password = view.findViewById(R.id.password);
         edit_password.addTextChangedListener(new TextWatcher() {
@@ -59,14 +61,10 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().matches("[abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ@#]+")) {
-                    password_layout.setEndIconVisible(false);
-                    password_layout.setErrorIconDrawable(R.drawable.ic_error);
-                    password_layout.setError("Invalid");
+                if (!s.toString().matches("[abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ@#]+") && !s.toString().equals("")) {
                     password_layout.setHelperText("*Use only A-Z, a-z, 0-9, @, #");
                     password_layout.setHelperTextColor(ColorStateList.valueOf(RED));
                 } else {
-                    password_layout.setEndIconVisible(true);
                     password_layout.setHelperText("");
                 }
             }
@@ -111,9 +109,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onSuccess(AuthResult authResult) {
                 pd.dismiss();
-                Toast.makeText(getContext(), "User LoggedIn Successfully!!!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getContext(), MainActivity.class));
-                getActivity().finish();
+                checkEmailVerification();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -122,6 +118,35 @@ public class LoginFragment extends Fragment {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showDialogBox() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Email Not Verified!!!");
+        builder.setMessage("Please verify your Email & Login again.");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                auth.signOut();
+                edit_password.setText("");
+            }
+        }).create();
+        builder.show();
+    }
+
+    void checkEmailVerification() {
+        FirebaseUser currentuser = auth.getCurrentUser();
+        boolean result= currentuser.isEmailVerified();
+
+        if(result){
+            Toast.makeText(getContext(), "User LoggedIn Successfully!!!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getContext(), MainActivity.class));
+            getActivity().finish();
+        }
+        else{
+            showDialogBox();
+            Toast.makeText(getContext(), "Please verify your Email. Try again!!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void ResetPassword() {

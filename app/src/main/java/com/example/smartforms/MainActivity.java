@@ -30,8 +30,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -42,11 +40,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static String VAL1="val1";
     ProgressDialog pd;
+    private FirebaseDatabase firebaseDatabase;
     private DatabaseReference dataRef;
     private FirebaseAuth auth;
     private DrawerLayout drawer;
@@ -67,10 +73,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     NotificationManagerCompat notificationManager;
 
+    private final byte[] encryptionKey = {9, 115, 51, 86, 105, 4, -31, -23, -68, 88, 17, 20, 3, -105, 119, -53};
+    private Cipher cipher, decipher;
+    private SecretKeySpec secretKeySpec;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            cipher = Cipher.getInstance("AES");
+            decipher = Cipher.getInstance("AES");
+            secretKeySpec = new SecretKeySpec(encryptionKey, "AES");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         pd = new ProgressDialog(this);
 
@@ -149,8 +171,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.inbox);
         }
         auth = FirebaseAuth.getInstance();
-        dataRef = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
-        
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        dataRef = firebaseDatabase.getReference().child("Users").child(auth.getCurrentUser().getUid());
+
         toolbarProfilePic = (CircleImageView) findViewById(R.id.profile);
         toolbarProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,73 +271,96 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void sendNotif(MailItem mailItem, String str) {
 
-        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
-        collapsedView.setTextViewText(R.id.text_view_collapsed_1, str);
+        String Uid = mailItem.getSenderUid();
+        firebaseDatabase.getReference().child("Users").child(Uid).child("Details").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
 
-        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-        expandedView.setTextViewText(R.id.text_view_expanded_1, mailItem.getSender());
-        expandedView.setTextViewText(R.id.text_view_expanded_2, mailItem.getSubject());
-        expandedView.setTextViewText(R.id.text_view_expanded_3, mailItem.getBody());
-        String date = mailItem.getDate().substring(0,4);
-        switch(mailItem.getDate().substring(4,6)) {
-            case "01" :
-                date = "Jan " + date;
-                break;
-            case "02" :
-                date = "Feb " + date;
-                break;
-            case "03" :
-                date = "Mar " + date;
-                break;
-            case "04" :
-                date = "Apr " + date;
-                break;
-            case "05" :
-                date = "May " + date;
-                break;
-            case "06" :
-                date = "Jun " + date;
-                break;
-            case "07" :
-                date = "Jul " + date;
-                break;
-            case "08" :
-                date = "Aug " + date;
-                break;
-            case "09" :
-                date = "Sep " + date;
-                break;
-            case "10" :
-                date = "Oct " + date;
-                break;
-            case "11" :
-                date = "Nov " + date;
-                break;
-            case "12" :
-                date = "Dec " + date;
-                break;
+                    RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
+                    collapsedView.setTextViewText(R.id.text_view_collapsed_1, str);
 
-        }
-        date = mailItem.getDate().substring(6, 8) + " " + date;
+                    RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
 
-        String time = mailItem.getDate().substring(10, 12);
-        int hrs = Integer.parseInt(mailItem.getDate().substring(8, 10));
-        if(hrs > 12)
-            time = (hrs-12) +":"+ time + " PM";
-        else
-            time = (hrs) +":"+ time + " AM";
+                    try {
+                        String name = (AESDecryptionMethod(user.getfName()) + " " + AESDecryptionMethod(user.getlName()));
+                        expandedView.setTextViewText(R.id.text_view_expanded_1, name);
+                        expandedView.setTextViewText(R.id.text_view_expanded_2, AESDecryptionMethod(mailItem.getSubject()));
+                        expandedView.setTextViewText(R.id.text_view_expanded_3, AESDecryptionMethod(mailItem.getBody()));
+                        String date = mailItem.getDate().substring(0, 4);
+                        switch (mailItem.getDate().substring(4, 6)) {
+                            case "01":
+                                date = "Jan " + date;
+                                break;
+                            case "02":
+                                date = "Feb " + date;
+                                break;
+                            case "03":
+                                date = "Mar " + date;
+                                break;
+                            case "04":
+                                date = "Apr " + date;
+                                break;
+                            case "05":
+                                date = "May " + date;
+                                break;
+                            case "06":
+                                date = "Jun " + date;
+                                break;
+                            case "07":
+                                date = "Jul " + date;
+                                break;
+                            case "08":
+                                date = "Aug " + date;
+                                break;
+                            case "09":
+                                date = "Sep " + date;
+                                break;
+                            case "10":
+                                date = "Oct " + date;
+                                break;
+                            case "11":
+                                date = "Nov " + date;
+                                break;
+                            case "12":
+                                date = "Dec " + date;
+                                break;
 
-        expandedView.setTextViewText(R.id.date, time+"\n"+date);
+                        }
+                        date = mailItem.getDate().substring(6, 8) + " " + date;
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_email)
-                .setCustomContentView(collapsedView)
-                .setCustomBigContentView(expandedView)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .build();
+                        String time = mailItem.getDate().substring(10, 12);
+                        int hrs = Integer.parseInt(mailItem.getDate().substring(8, 10));
+                        if (hrs > 12)
+                            time = (hrs - 12) + ":" + time + " PM";
+                        else
+                            time = (hrs) + ":" + time + " AM";
 
-        notificationManager.notify(1, notification);
+                        expandedView.setTextViewText(R.id.date, time + "\n" + date);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_email)
+                            .setCustomContentView(collapsedView)
+                            .setCustomBigContentView(expandedView)
+                            .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .build();
+
+                    notificationManager.notify(1, notification);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
@@ -417,10 +463,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     user = snapshot.getValue(User.class);
                     if (user != null) {
-                        Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(toolbarProfilePic);
-                        Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(navProfilePic);
-                        navName.setText(user.getfName() + " " + user.getlName());
-                        navEmail.setText(user.getEmail());
+                        try {
+                            Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(toolbarProfilePic);
+                            Picasso.get().load(user.getImage()).placeholder(R.drawable.profilebg).into(navProfilePic);
+                            navName.setText(AESDecryptionMethod(user.getfName()) + " " + AESDecryptionMethod(user.getlName()));
+                            navEmail.setText(AESDecryptionMethod(user.getEmail()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         pd.dismiss();
                     } else {
                         pd.dismiss();
@@ -444,6 +494,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private String AESEncryptionMethod(String string) {
+
+        byte[] stringByte = string.getBytes();
+        byte[] encryptedByte = new byte[stringByte.length];
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            encryptedByte = cipher.doFinal(stringByte);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+
+        String returnString = null;
+
+        returnString = new String(encryptedByte, StandardCharsets.ISO_8859_1);
+        return returnString;
+    }
+
+    private String AESDecryptionMethod(String string) throws UnsupportedEncodingException {
+        byte[] EncryptedByte = string.getBytes(StandardCharsets.ISO_8859_1);
+        String decryptedString = string;
+
+        byte[] decryption;
+
+        try {
+            decipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+            decryption = decipher.doFinal(EncryptedByte);
+            decryptedString = new String(decryption);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return decryptedString;
     }
 
 }
